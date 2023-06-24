@@ -1,7 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import render,get_object_or_404
 from rest_framework.decorators import api_view
-from api.models import Book
-from api.serializers import BookSerializer
+from api.models import Book,CartItem
+from api.serializers import BookSerializer,CartItemSerializer
 from rest_framework.response import Response
 from rest_framework import status
 
@@ -27,3 +27,28 @@ def BooksView(request):
 
 
 
+
+@api_view(['POST'])
+def add_to_cart(request):
+    session_id = request.session.session_key
+    if session_id is None:
+        # Create a new session if it doesn't exist
+        request.session.create()
+        session_id = request.session.session_key
+
+    book_id = request.data.get('book')
+    quantity = request.data.get('quantity')
+
+    book = get_object_or_404(Book, id=book_id)
+
+    cart_item, created = CartItem.objects.get_or_create(session_id=session_id, book=book)
+
+    if not created:
+        cart_item.quantity += int(quantity)
+    else:
+        cart_item.quantity = int(quantity)
+
+    cart_item.save()
+
+    serializer = CartItemSerializer(cart_item)
+    return Response(serializer.data)
