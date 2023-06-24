@@ -17,12 +17,12 @@ def BooksView(request):
         return Response(serializer.data) #sending response in json
     
     if request.method == 'POST':
-        data = request.data
+        data = request.data #getting the request and extract the data and store it into a variable
         serializer = BookSerializer(data=data)
         if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            serializer.save() #saving the instance
+            return Response(serializer.data, status=status.HTTP_201_CREATED) #if works success
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) #will show error
         
 
 
