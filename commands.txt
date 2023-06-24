@@ -1,0 +1,7 @@
+virtual env : 
+py -m venv box
+box\Scripts\activate.bat
+
+django :
+pip install django
+
