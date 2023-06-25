@@ -12,12 +12,17 @@ class Book(models.Model):
     def __str__(self):
         return self.title
     
-class CartItem(models.Model):
-    session_id = models.CharField(max_length=270) #using session id to distinguish
-    book = models.ForeignKey(Book, on_delete=models.CASCADE)
-    quantity = models.IntegerField(default=1)
-   
+class Cart(models.Model):
+    session_id = models.CharField(max_length=255)
 
     def __str__(self):
-        return f"Book: {self.book.title}, Quantity: {self.quantity}"
+        return self.session_id
 
+
+class CartItem(models.Model):
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+
+    def __str__(self):
+        return f"{self.book.title} ({self.quantity})"

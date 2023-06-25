@@ -1,6 +1,7 @@
 from django.contrib import admin
-from api.models import Book,CartItem
+from api.models import Book,Cart, CartItem
 # Register your models here.
 
 admin.site.register(Book)
+admin.site.register(Cart)
 admin.site.register(CartItem)
