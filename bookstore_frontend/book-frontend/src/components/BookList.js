@@ -1,31 +1,54 @@
+
+
 import React, { useEffect, useState } from 'react';
-import '../App.css';
+import axios from 'axios';
+import {  Link } from 'react-router-dom';
 
 
-const BookList = () => {
+
+function BookList() {
   const [books, setBooks] = useState([]);
 
+
   useEffect(() => {
-    // Fetch the list of books from the API endpoint
-    fetch('/api/books/')
-      .then(response => response.json())
-      .then(data => setBooks(data));
+    fetchBooks();
   }, []);
 
+  const fetchBooks = () => {
+    axios
+      .get('http://localhost:8000/api/books/')
+      .then(response => {
+        setBooks(response.data);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+ 
+  
+
   return (
-    <div className='app-container'>
-      <h1>List of Available Books</h1>
+    <div>
+      
+      <Link to="/cart">Added To Cart</Link>
+
+
+      <h1>Book List</h1>
       {books.map(book => (
         <div key={book.id}>
           <h3>{book.title}</h3>
-          <p>Author: {book.author}</p>
-          <p>Publisher: {book.publisher}</p>
-          <p>Price: ${book.price}</p>
+          <p>{book.author}</p>
+          <p>{book.publisher}</p>
+          <p>{book.price}</p>
           <p>{book.description}</p>
+      
         </div>
       ))}
+
+ 
+     
     </div>
   );
-};
+}
 
 export default BookList;

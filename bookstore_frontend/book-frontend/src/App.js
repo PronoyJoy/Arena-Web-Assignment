@@ -1,22 +1,32 @@
 import React from 'react';
-import Header from './components/Header'
-import './App.css';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import BookList from './components/BookList';
-
+import AddBook from './components/AddBook';
 
 
 function App() {
   return (
-   
-     
-    <div className='app-container'>
+    <Router>
+      <div>
+        <nav>
+          <ul>
+            <li>
+              <Link to="/">Home</Link>
+            </li>
+            <li>
+              <Link to="/add-book">Add Book</Link>
+            </li>
+            
+          </ul>
+        </nav>
 
-      <Header />
-      <BookList />
-    
-    </div>
-      
-   
+        <Routes>
+          <Route path="/" element={<BookList />} />
+          <Route path="/add-book" element={<AddBook />} />
+         
+        </Routes>
+      </div>
+    </Router>
   );
 }
 
