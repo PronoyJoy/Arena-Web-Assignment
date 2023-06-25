@@ -28,11 +28,11 @@ def BooksView(request):
 
 
 from django.http import JsonResponse
+from django.contrib.sessions.backends.db import SessionStore
 
 @api_view(['POST'])
 def add_to_cart(request):
     book_ids = request.data.get('book_ids', [])
-    quantity = request.data.get('quantity', 1)
 
     # Check if all book IDs exist in the database
     books = Book.objects.filter(id__in=book_ids)
@@ -41,11 +41,19 @@ def add_to_cart(request):
         error_message = f"Invalid book IDs: {', '.join(map(str, invalid_book_ids))}"
         return JsonResponse({'error': error_message}, status=400)
 
-    # Proceed with adding the books to the cart
-    # Your code to add the books to the cart
+    # Get or create the cart based on the session ID
+    session_id = request.session.session_key
+    if not session_id:
+        request.session.save()
+        session_id = request.session.session_key
+
+    cart, created = Cart.objects.get_or_create(session_id=session_id)
+
+    # Add the selected books to the cart
+    for book in books:
+        CartItem.objects.create(cart=cart, book=book)
 
     return JsonResponse({'message': 'Books added to cart successfully'}, status=200)
-
 
 @api_view(['GET'])
 def view_cart(request):
